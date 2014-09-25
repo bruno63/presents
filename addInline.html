@@ -1,0 +1,35 @@
+<form name="presentForm" class="form-inline" role="form" data-ng-submit="save(presentForm.$valid)" novalidate>
+    <div class="form-group">
+        <label class="sr-only" for="date">Date</label>
+        <input type="date" class="form-control" data-ng-model="formData.datum" id="date" placeholder="Date"></input>
+    </div>
+    <div class="form-group">
+        <label class="sr-only" for="from">From</label>
+        <input type="text" class="form-control" data-ng-model="formData.from" id="from" placeholder="From"></input>
+    </div>
+    <div class="form-group">
+        <label class="sr-only" for="to">To</label>
+        <input type="text" class="form-control" data-ng-model="formData.to" id="to" placeholder="To"></input>
+    </div>
+    <div class="form-group">
+        <label class="sr-only" for="type">Type</label>
+        <input type="text" class="form-control" data-ng-model="formData.type" id="type" placeholder="Type"></input>
+    </div>
+    <div class="form-group">
+        <label class="sr-only" for="">Comment</label>
+        <input type="text" class="form-control" data-ng-model="formData.comment" id="comment" placeholder="Comment"></input>
+    </div>
+    <div class="form-group">
+    <button type="submit" class="btn btn-success btn-xs"
+            data-toggle="tooltip" data-placement="top" title="Save">
+        <span class="fa fa-save fa-fw"></span>
+    </button>
+    </div>
+    <div class="form-group">
+    <a type="button" href="/presents" class="btn btn-danger btn-xs"
+            data-toggle="tooltip" data-placement="top" title="Cancel">
+        <span class="fa fa-close fa-fw"></span>
+    </a>
+    </div>
+</form>
+
