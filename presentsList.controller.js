@@ -54,7 +54,7 @@ angular.module('presents')
 	};
 
 	$scope.getDate = function(dateStr) {
-		$log.log('entering PresentsListCtrl:getDate(' + dateStr + ')'); 
+		// $log.log('entering PresentsListCtrl:getDate(' + dateStr + ')'); 
 		return new Date(dateStr);
 	};
 
