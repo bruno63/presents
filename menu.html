@@ -5,7 +5,7 @@
 	</a>
 	<ul class="dropdown-menu">
 		<li>
-			<a href="#" dropdown-toggle ng-click='export()'>
+			<a href="#" class="dropdown-toggle" ng-click='export()'>
 				<span class="fa fa-download fa-fw"></span>
 				{{ 'Export' | translate }}...
 			</a>
@@ -18,7 +18,15 @@
 		<span class="caret"></span>
 	</a>
 	<ul class="dropdown-menu">
-		<li ng-click="clearFilter()"><a href="#" dropdown-toggle>{{ 'ClearFilter' | translate}}</a></li>
-		<li ng-click="clearSorting()"><a href="#" dropdown-toggle>{{ 'ClearSorting' | translate}}</a></li>
+		<li ng-click="clearFilter()">
+			<a href="#" class="dropdown-toggle">
+				{{ 'ClearFilter' | translate}}
+			</a>
+		</li>
+		<li ng-click="clearSorting()">
+			<a href="#" class="dropdown-toggle">
+				{{ 'ClearSorting' | translate}}
+			</a>
+		</li>
 	</ul>
 </li>
