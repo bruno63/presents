@@ -4,5 +4,12 @@
 	"ColFrom": "From",
 	"ColTo": "To",
 	"ColType": "Type",
-	"ColComment": "Comment"
+	"ColComment": "Comment",
+	"PTBirthday": "Birthday",
+	"PTXmas": "Christmas",
+	"PTOstern": "Easter",
+	"PTMatur": "Matura",
+	"PTKonfirmation": "Religion",
+	"PTHochzeit": "Marriage",
+	"PTOther": "Other"
 }

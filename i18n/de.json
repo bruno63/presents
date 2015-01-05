@@ -4,5 +4,12 @@
 	"ColFrom": "Von",
 	"ColTo": "An",
 	"ColType": "Geschenkart",
-	"ColComment": "Kommentar"
+	"ColComment": "Kommentar",
+	"PTBirthday": "Geburtstag",
+	"PTXmas": "Weihnachten",
+	"PTOstern": "Ostern",
+	"PTMatur": "Matur",
+	"PTKonfirmation": "Konfirmation",
+	"PTHochzeit": "Hochzeit",
+	"PTOther": "Anderes"
 }
