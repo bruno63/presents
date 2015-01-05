@@ -11,7 +11,7 @@ var ptypeHash = {
 };
 
 angular.module('presents')
-.filter('mapType', function($log, $translate) {
+.filter('mapType', function($log) {
 	return function(input) {
 		if (input < 1 || input > ptypeHash.length) {
 			$log.log('**** ERROR: presents.mapType: input is ' + input);
@@ -20,7 +20,7 @@ angular.module('presents')
 			$log.log('presents.mapType = ' + ptypeHash[input]);
 			return ptypeHash[input];
 		}
-	}
+	};
 })
 .controller('PresentsListCtrl', function ($scope, $log, $http, uiGridConstants, $translate, $translatePartialLoader, AppConfig) {
 	AppConfig.setCurrentApp('Presents', 'fa-gift', 'presents', 'app/presents/menu.html');
@@ -97,13 +97,12 @@ angular.module('presents')
 		exporterPdfPageSize: 'A4',
 		exporterPdfMaxGridWidth: 500,
 		*/
-		exporterCsvLinkElement: angular.element(document.querySelectorAll(".custom-csv-link-location")),
+		exporterCsvLinkElement: angular.element(document.querySelectorAll('.custom-csv-link-location')),
 
 		onRegisterApi: function(gridApi) {
 			$scope.gridApi = gridApi;
 			gridApi.edit.on.afterCellEdit($scope, function(rowEntity, colDef, newValue, oldValue) {
-				$scope.msg.lastCellEdited = 'edited row id: ' + rowEntity.id + ' Column: ' + colDef.name 
-					+ ' newValue: ' + newValue + ' oldValue: ' + oldValue;
+				$scope.msg.lastCellEdited = 'edited row id: ' + rowEntity.id + ' Column: ' + colDef.name + ' newValue: ' + newValue + ' oldValue: ' + oldValue;
 				$scope.apply();
 			});
 		}
@@ -127,7 +126,7 @@ angular.module('presents')
 
 	var _presentsListUri = 'http://localhost:3333/api/presents';
 	$http.get(_presentsListUri)
-	.success(function(data, status, headers, config) {
+	.success(function(data, status) {
 		var i = 0;
 		for(i=0; i < data.length; i++) {
 			data[i].datum = new Date(data[i].datum).toLocaleDateString(AppConfig.getCurrentLanguageKey());
@@ -136,26 +135,21 @@ angular.module('presents')
 		$scope.gridOptions.data = data;
 		$log.log('**** SUCCESS: GET(' + _presentsListUri + ') returns with ' + status);
     	//$log.log('data=<' + data + '>');
-    	//$log.log('headers=<' + headers + '>');
-    	//$log.log('config=<' + config + '>');
 	})
-	.error(function(data, status, headers, config) {
-  		// called asynchronously if an error occurs
-    	// or server returns response with an error status.
+	.error(function(data, status) {
+  		// called asynchronously if an error occurs or server returns response with an error status.
     	$log.log('**** ERROR:  GET(' + _presentsListUri + ') returns with ' + status);
-    	//$log.log('data=<' + data + '>');
-    	//$log.log('headers=<' + headers + '>');
-    	//$log.log('config=<' + config + '>');
+    	$log.log('data=<' + data + '>');
   	});	
 
   	$scope.export = function() {
-  		if ($scope.export_format == 'csv') {
-  			var myElement = angular.element(document.querySelectorAll(".custom-csv-link-location"));
-  			$scope.gridApi.exporter.csvExport($scope.export_row_type, $scope.export_column_type, myElement);
-  		} else if ($scope.export_format == 'pdf') {
-  			$scope.gridApi.exporter.pdfExport($scope.export_row_type, $scope.export_column_type);
+  		if ($scope.exportFormat === 'csv') {
+  			var myElement = angular.element(document.querySelectorAll('.custom-csv-link-location'));
+  			$scope.gridApi.exporter.csvExport($scope.exportRowType, $scope.exportColumnType, myElement);
+  		} else if ($scope.exportFormat === 'pdf') {
+  			$scope.gridApi.exporter.pdfExport($scope.exportRowType, $scope.exportColumnType);
   		} else {
-  			$log.log("**** ERROR: PresentsListCtrl.export(): unknown export_format: " + $scope.export_format);
+  			$log.log('**** ERROR: PresentsListCtrl.export(): unknown exportFormat: ' + $scope.exportFormat);
   		}
   	};
 
@@ -164,80 +158,3 @@ angular.module('presents')
 		return AppConfig.getCurrentLanguageKey();
 	};
 });
-
-	/*
-	$scope.counts = [10, 25, 50, 100];  // set to an empty array to disable the toggler
-
-	// see alternative solution for initial data load using promise to load data into ng-table: 
-	// http://stackoverflow.com/questions/23608247/how-to-refresh-ng-table-loaded-from-an-http-request-with-dynamic-data
-	$scope.tableParams = new ngTableParams({
-		page:     1,            		// show first page
-		count:   10          			// count per page
-	}, {
-        total:    0,					// length of data
-        counts: $scope.counts,		// set to an empty array to disable the toggler
-       	getData: function($defer, params) {
-       		PresentsRestService.all('presents').getList().then(function(data) {
-       	    	var filteredData = params.filter() ? $filter('filter')(data, params.filter()) : data;
-        		var orderedData = params.sorting() ? $filter('orderBy')(filteredData, params.orderBy()) : filteredData; 
-       			params.total(orderedData.length);
-       			$defer.resolve($scope.data = orderedData.slice((params.page() -1) * params.count(), params.page() * params.count()));           
-       		}, 500);
-       	}
-    });
-
-	// todo: does not work as expected yet, should turn on and off the toggler. Toggler seems to be set correctly in $scope.counts,
-	// but has no effect on the view (reload seems not to work)
-    $scope.toggleCounts = function() {
-		$log.log('entering PresentsListCtrl:toggleCounts, $scope.counts=<' + $scope.counts + '>');
-
-    	if ($scope.counts.length > 0) {
-    		$scope.counts = [];
-    	}
-    	else {
-    		$scope.counts = [10, 25, 50, 100];
-    	}
-    	$scope.tableParams.reload();
-    };
-
-    $scope.export = function() {
-		$log.log('entering PresentsListCtrl:export into presents.csv'); 
-//    	$scope.csv.generate($event, 'presents.csv');
-    };
-
-    $scope.clearFilter = function() {
-		$log.log('entering PresentsListCtrl:clearFilter'); 
-		$scope.tableParams.filter({});
-	};
-	$scope.clearSorting = function() {
-		$log.log('entering PresentsListCtrl:clearSorting'); 
-		$scope.tableParams.sorting({});
-	};
-	$scope.getDate = function(dateStr) {
-		// $log.log('entering PresentsListCtrl:getDate(' + dateStr + ')'); 
-		return new Date(dateStr);
-	};
-
-	// inline edit
-	$scope.save = function(data) {
-		$log.log('entering PresentsListCtrl:save(' + data + ')');
-		var currentPresent = PresentsRestService.one('presents', data._id);
-		currentPresent = data;
-		currentPresent.put().then(function() {
-			data.$edit=false;
-		});
-	};
-
-	$scope.delete = function (data) {
-		$log.log('entering PresentsListCtrl:delete(' + data + ')');
-		if(window.confirm('Are you sure?')) {
-			PresentsRestService.one('presents', data._id).remove().then(function () {
-				$scope.tableParams.reload();
-			});
-		}
-	};
-	*/
-
-
-
-
