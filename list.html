@@ -2,6 +2,7 @@
 	<div class="row-fluid col-sm-12">
 		<h1>{{ 'PresentsAppName' | translate}}</h1>
 		<hr />
+		<!--
 		<button ng-click="clearSorting()" class="btn btn-default pull-right">{{ 'ClearSorting' | translate}}</button>
 		<button ng-click="clearFilter()"  class="btn btn-default pull-right">{{ 'ClearFilter' | translate}}</button>
 		<a ui-sref="presents.addInline" type="button" class="btn btn-default pull-right">
@@ -14,7 +15,36 @@
 			<p><strong>{{ 'Sorting' | translate}}:</strong> {{tableParams.sorting()|json}}</p>
 			<p><strong>{{ 'Filter' | translate}}:</strong> {{tableParams.filter()|json}}</p>
 		</div>
+	-->
 
+		<div ui-i18n="{{getLang()}}">
+			<strong>Data Length:</strong> {{ gridOptions.data.length | number }} <br />
+			<strong>Last Cell Edited:</strong> {{ msg.lastCellEdited }} </br>
+			<label>Column selection:</label>
+			<select ng-model="export_column_type">
+				<option value="all">All</option>
+				<option value="visible">Visible</option>
+			</select>
+			<label>Row selection:</label>
+			<select ng-model="export_row_type">
+				<option value="all">All</option>
+				<option value="visible">Visible</option>
+				<option value="selected">Selected</option>
+			</select>
+			<label>Export format:</label>
+			<select ng-model="export_format">
+				<option value="csv">csv</option>
+				<option value="pdf">pdf</option>
+			</select>
+
+			<button ng-click="export()">Export</button>
+			<div class="custom-csv-link-location">
+				<label:Your CSV will show below:</label>
+				<span class="ui-grid-exporter-csv-link">&nbsp</span>
+			</div>
+			<div id="grid" ui-grid="gridOptions" ui-grid-edit ui-grid-resize-columns ui-grid-selection ui-grid-exporter class="grid"></div>
+			<!-- add ui-grid-paging (but it seems not stable yet) -->
+		</div>
 <!--
 	export works, but is not complete yet. 
 	There are two different implementation of ng-table-export:
@@ -27,6 +57,7 @@
 		<a class="btn btn-primary" ng-click='csv.generate($event, "presents.csv")' href=''>Export to CSV</a>
 		<a class="btn btn-primary" ng-click="{{ {'name': 'value' } | json}}" href=''>Export to CSV</a>
 	-->
+	<!--
 		<input type="checkbox" ng-model="showFilter"> {{ 'ShowFilter' | translate}}</input>
 		<input type="checkbox" ng-init="counts.length > 0" ng-click="toggleCounts()"> {{ 'ShowToggler' | translate}}</input>
 		<hr />
@@ -91,6 +122,7 @@
 				</tr>
 			</table>
 		</div>
+	-->
 	</div>
 </div>
 
