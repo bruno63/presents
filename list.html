@@ -2,127 +2,25 @@
 	<div class="row-fluid col-sm-12">
 		<h1>{{ 'PresentsAppName' | translate}}</h1>
 		<hr />
-		<!--
-		<button ng-click="clearSorting()" class="btn btn-default pull-right">{{ 'ClearSorting' | translate}}</button>
-		<button ng-click="clearFilter()"  class="btn btn-default pull-right">{{ 'ClearFilter' | translate}}</button>
-		<a ui-sref="presents.addInline" type="button" class="btn btn-default pull-right">
-			<span class="fa fa-plus-square"></span>
-		</a>
-		<a ui-sref="presentsAdd" type="button" class="btn btn-default pull-right">
-			<span class="fa fa-plus"></span>
-		</a>
-		<div ng-if="isDebugMode()">
-			<p><strong>{{ 'Sorting' | translate}}:</strong> {{tableParams.sorting()|json}}</p>
-			<p><strong>{{ 'Filter' | translate}}:</strong> {{tableParams.filter()|json}}</p>
-		</div>
-	-->
-
-		<div ui-i18n="{{getLang()}}">
-			<strong>Data Length:</strong> {{ gridOptions.data.length | number }} <br />
-			<strong>Last Cell Edited:</strong> {{ msg.lastCellEdited }} </br>
-			<label>Column selection:</label>
-			<select ng-model="export_column_type">
-				<option value="all">All</option>
-				<option value="visible">Visible</option>
-			</select>
-			<label>Row selection:</label>
-			<select ng-model="export_row_type">
-				<option value="all">All</option>
-				<option value="visible">Visible</option>
-				<option value="selected">Selected</option>
-			</select>
-			<label>Export format:</label>
-			<select ng-model="export_format">
-				<option value="csv">csv</option>
-				<option value="pdf">pdf</option>
-			</select>
-
-			<button ng-click="export()">Export</button>
+		<div class="table-responsive" ui-i18n="{{getLang()}}">
 			<div class="custom-csv-link-location">
 				<label:Your CSV will show below:</label>
 				<span class="ui-grid-exporter-csv-link">&nbsp</span>
 			</div>
-			<div id="grid" ui-grid="gridOptions" ui-grid-edit ui-grid-resize-columns ui-grid-selection ui-grid-exporter class="grid"></div>
+			<div id="grid" ui-grid="gridOptions" ui-grid-edit ui-grid-row-edit ui-grid-cellNav ui-grid-resize-columns ui-grid-selection ui-grid-exporter class="grid"></div>
 			<!-- add ui-grid-paging (but it seems not stable yet) -->
 		</div>
-<!--
-	export works, but is not complete yet. 
-	There are two different implementation of ng-table-export:
-	original:  		esvit / ng-table-export
-	fork:   		davisford / ng-table-export   (fix to work with pager)
-	We use the fork from davisford, because it works with ng-tables pager. Tested ok in Chrome and Safari (Excel not started, mime type probably needs to be configured accordingly)
-	Goal: formulate the whole table-handling into a directive or service incl. import/export/crud-operations.
--->
-<!--
-		<a class="btn btn-primary" ng-click='csv.generate($event, "presents.csv")' href=''>Export to CSV</a>
-		<a class="btn btn-primary" ng-click="{{ {'name': 'value' } | json}}" href=''>Export to CSV</a>
-	-->
-	<!--
-		<input type="checkbox" ng-model="showFilter"> {{ 'ShowFilter' | translate}}</input>
-		<input type="checkbox" ng-init="counts.length > 0" ng-click="toggleCounts()"> {{ 'ShowToggler' | translate}}</input>
-		<hr />
-		<div ui-view=""></div>
-
-		<div class="table-responsive">
-			<table ng-table="tableParams" show-filter="showFilter" class="table table-hover">
-				<tr ng-repeat="p in $data">
-					<td data-title="'Date'" sortable="'datum'" filter="{ 'datum': 'text' }">
-						<span ng-if="!p.$edit">{{getDate(p.datum) | date:'dd.MM.yyyy'}}</span>
-						<div ng-if="p.$edit" ng-controller="DatepickerCtrl" class="input-group">
-							<input type="text" class="form-control" datepicker-popup="dd.MM.yyyy" 
-								ng-model="p.datum" is-open="opened" datepicker-options="dateOptions" 
-								ng-click="open($event)" close-Text="Close">
-							</input>
-						</div>
-					</td>
-					<td data-title="'From'" sortable="'from'" filter="{ 'from': 'text' }">
-						<span ng-if="!p.$edit">{{ p.from }}</span>
-						<div ng-if="p.$edit">
-							<input class="form-control" type="text" ng-model="p.from"></input>
-						</div>
-					</td>
-					<td data-title="'To'" sortable="'to'" filter="{ 'to': 'text' }">
-						<span ng-if="!p.$edit">{{ p.to }}</span>
-						<div ng-if="p.$edit">
-							<input class="form-control" type="text" ng-model="p.to"></input>
-						</div>
-					</td>
-					<td data-title="'Type'" sortable="'type'" filter="{ 'type': 'text' }">
-						<span ng-if="!p.$edit">{{p.type}}</span>
-						<div ng-if="p.$edit">
-							<input class="form-control" type="text" ng-model="p.type"></input>
-						</div>
-					</td>
-					<td data-title="'Comment'" sortable="'comment'" filter="{ 'comment': 'text' }">
-						<span ng-if="!p.$edit">{{p.comment}}</span>
-						<div ng-if="p.$edit">
-							<input class="form-control" type="text" ng-model="p.comment"></input>
-						</div>
-					</td>
-					<td>
-						<button ng-if="!p.$edit" ng-click="p.$edit = true" type="button" 
-							class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="top" title="Edit">
-							<span class="fa fa-pencil fa-fw"></span>
-						</button>
-						<button ng-if="p.$edit" ng-click="save(p)" type="button" class="btn btn-success btn-xs" 
-							data-toggle="tooltip" data-placement="top" title="Save">
-							<span class="fa fa-save fa-fw"></span>
-						</button>
-					</td>
-					<td>
-						<button ng-if="p.$edit" ng-click="p.$edit=false" type="button" class="btn btn-danger btn-xs"
-							data-toggle="tooltip" data-placement="top" title="Cancel">
-							<span class="fa fa-close fa-fw"></span>
-						</button>
-						<button ng-if="!p.$edit" ng-click="delete(p)" type="button" class="btn btn-default btn-xs"
-							data-toggle="tooltip" data-placement="top" title="Delete">
-							<span class="fa fa-trash-o fa-fw"></span>
-						</button>
-					</td>
-				</tr>
-			</table>
-		</div>
-	-->
 	</div>
 </div>
-
+<div class="container">
+	<div class="row-fluid col-sm-12">
+		<hr />
+		<button type="button" id="addData" class="btn btn-info" ng-click="addData()">Add Data</button>
+		<button type="button" id="removeFirstRow" class="btn btn-info" ng-click="removeFirstRow()">Remove First Row</button>
+		<div class="pull-right">
+			<a class="btn btn-inverse btn-success" href="/">
+				{{ 'OK' | translate }}
+			</a>
+		</div>
+	</div>
+</div>
