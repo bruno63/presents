@@ -22,11 +22,33 @@ angular.module('presents')
 		}
 	};
 })
-.controller('PresentsListCtrl', function ($scope, $log, $http, uiGridConstants, $translate, $translatePartialLoader, AppConfig) {
+.controller('PresentsListCtrl', function ($scope, $log, $http, uiGridConstants, $translate, $timeout, $interval, $translatePartialLoader, AppConfig, cfg) {
 	AppConfig.setCurrentApp('Presents', 'fa-gift', 'presents', 'app/presents/menu.html');
 	$translatePartialLoader.addPart('presents');
 
-	$scope.msg = {};
+	$scope.addData = function() {
+//		var n = $scope.gridOptions.data.length + 1;
+		$scope.gridOptions.data.push({
+			'datum': new Date().toLocaleDateString(AppConfig.getCurrentLanguageKey()),
+			'from': 'myself',
+			'to': 'you',
+			'ptype': $translate('PTBirthday'),
+			'comment': 'bla'
+		});
+	};
+
+	$scope.removeFirstRow = function() {
+//		if ($scope.gridOptions.data.length > 0) {
+			$scope.gridOptions.data.splice(0, 1);
+//		}
+	};
+
+	$scope.saveRow = function( rowEntity ) {
+		var _uri = cfg.PresentsSvcUri + 'presents/' + rowEntity._id;
+		$log.log('PresentsListCtrl.saveRow() -> $http.put(' + _uri + ')');
+		var promise = $http.put(_uri);
+		$scope.gridApi.rowEdit.setSavePromise( $scope.gridApi.grid, rowEntity, promise.promise );
+	};
 
 	$scope.gridOptions = {
 		minRowsToShow: 20,
@@ -39,10 +61,9 @@ angular.module('presents')
 		// pagingPageSize: 25,
 		enableCellEdit: true,
 		enableSelectAll: true,
-		// csv export -> not working, default 'download.csv' is taken
-		// exporterCsvFilename: 'presents.csv',
 
 		columnDefs: [
+			{	name: 'id', field: '_id', displayName: 'ID', visible: false, width: '*' },
 			{ 	name: 'datum', field: 'datum', displayName: 'Date', visible: true, width: '*', 
 				sort: { direction: uiGridConstants.ASC }}, 
 			{ 	name: 'from', field: 'from', visible: true, width: '*' },
@@ -60,6 +81,7 @@ angular.module('presents')
 					{ id: 7, value: 'PTOther'}
 				]
 				/*,
+				ev. mit cellFilter: 'date:"yyyy-MM-dd"' versuchen im Datumsfeld
 				filter: {
 					condition: function(searchTerm, cellValue) {
 						$log.log('searchTerm=<' + searchTerm +  '>, cellValue=<' + cellValue > '>');
@@ -78,12 +100,10 @@ angular.module('presents')
 			{ name: 'comment', field: 'comment', enableSorting: false, visible: true, width: '*', minWidth: 20 }
 		],
 		// pdf export
-		/*
-		// disabled exporterPdfCustomFormatter, because it does not work with a function
 		exporterPdfDefaultStyle: { fontSize: 9},
 		exporterPdfTableStyle: { margin: [0, 5, 0, 15]},
 		exporterPdfTableHeaderStyle: { fontSize: 10, bold: true, italics: true, color: 'red'},
-		exporterPdfHeader: { text: "Presents", style: 'headerStyle'},
+		exporterPdfHeader: { text: 'Presents', style: 'headerStyle'},
 		exporterPdfFooter: function(currentPage, pageCount) {
 			return { text: currentPage.toString() + ' of ' + pageCount.toString(), style: 'footerStyle'};
 		},
@@ -96,15 +116,24 @@ angular.module('presents')
 		exporterPdfOrientation: 'portrait',
 		exporterPdfPageSize: 'A4',
 		exporterPdfMaxGridWidth: 500,
-		*/
+
+		// csv export -> not working, default 'download.csv' is taken
+		exporterCsvFilename: 'presents.csv',
 		exporterCsvLinkElement: angular.element(document.querySelectorAll('.custom-csv-link-location')),
 
 		onRegisterApi: function(gridApi) {
 			$scope.gridApi = gridApi;
+			gridApi.rowEdit.on.saveRow($scope, $scope.saveRow);
+			// force grid to resize 
+			$timeout(function() {
+				gridApi.core.handleWindowResize();
+			});
+			/*
 			gridApi.edit.on.afterCellEdit($scope, function(rowEntity, colDef, newValue, oldValue) {
 				$scope.msg.lastCellEdited = 'edited row id: ' + rowEntity.id + ' Column: ' + colDef.name + ' newValue: ' + newValue + ' oldValue: ' + oldValue;
 				$scope.apply();
 			});
+*/
 		}
 	};
 
@@ -123,8 +152,7 @@ angular.module('presents')
 		$scope.gridOptions.columnDefs[0].displayName = translation;
 	});
 */
-
-	var _presentsListUri = 'http://localhost:3333/api/presents';
+	var _presentsListUri = cfg.PresentsSvcUri + 'presents';
 	$http.get(_presentsListUri)
 	.success(function(data, status) {
 		var i = 0;
