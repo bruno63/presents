@@ -44,7 +44,7 @@ angular.module('presents')
 	};
 
 	$scope.saveRow = function( rowEntity ) {
-		var _uri = cfg.PresentsSvcUri + 'presents/' + rowEntity._id;
+		var _uri = '/api/presents/' + rowEntity.id;
 		$log.log('PresentsListCtrl.saveRow() -> $http.put(' + _uri + ')');
 		var promise = $http.put(_uri);
 		$scope.gridApi.rowEdit.setSavePromise( $scope.gridApi.grid, rowEntity, promise.promise );
@@ -152,7 +152,7 @@ angular.module('presents')
 		$scope.gridOptions.columnDefs[0].displayName = translation;
 	});
 */
-	var _presentsListUri = cfg.PresentsSvcUri + 'presents';
+	var _presentsListUri = '/api/presents';
 	$http.get(_presentsListUri)
 	.success(function(data, status) {
 		var i = 0;
@@ -162,7 +162,7 @@ angular.module('presents')
 		}
 		$scope.gridOptions.data = data;
 		$log.log('**** SUCCESS: GET(' + _presentsListUri + ') returns with ' + status);
-    	//$log.log('data=<' + data + '>');
+    	$log.log('data=<' + data + '>');
 	})
 	.error(function(data, status) {
   		// called asynchronously if an error occurs or server returns response with an error status.
