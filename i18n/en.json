@@ -5,11 +5,11 @@
 	"ColTo": "To",
 	"ColType": "Type",
 	"ColComment": "Comment",
-	"PTBirthday": "Birthday",
-	"PTXmas": "Christmas",
-	"PTOstern": "Easter",
-	"PTMatur": "Matura",
-	"PTKonfirmation": "Religion",
-	"PTHochzeit": "Marriage",
-	"PTOther": "Other"
+	"Birthday": "Birthday",
+	"Christmas": "Christmas",
+	"Easter": "Easter",
+	"Matura": "Matura",
+	"Religion": "Religion",
+	"Marriage": "Marriage",
+	"Other": "Other"
 }

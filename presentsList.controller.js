@@ -1,28 +1,43 @@
 'use strict';
 
 var ptypeHash = {
-	1: 'PTBirthday',
-	2: 'PTXmas',
-	3: 'PTOstern',
-	4: 'PTMatur',
-	5: 'PTKonfirmation',
-	6: 'PTHochzeit',
-	7: 'PTOther'
+	Birthday: 1,
+	Christmas: 2,
+	Easter: 3,
+	Matura: 4,
+	Religion: 5,
+	Marriage: 6,
+	Other: 7
 };
 
+// The english stringified terms (as shown in ptypeHash) are made persistent in the database.
+// The same terms serve as the index for translations (see i18n/*) as well as the english default translation.
+// In order to use the dropdown menu of predefined types, the numeric index is used during runtime.
+// This index is converted with filter 'mapType' for viewing.
+// TODO: this works well as long as it is used in english. Some additional work is needed to show the translated terms.
 angular.module('presents')
 .filter('mapType', function($log) {
+	var ptypeHashReversed = {
+		1: 'Birthday',
+		2: 'Christmas',
+		3: 'Easter',
+		4: 'Matura',
+		5: 'Religion',
+		6: 'Marriage',
+		7: 'Other'
+	};
+
 	return function(input) {
-		if (input < 1 || input > ptypeHash.length) {
-			$log.log('**** ERROR: presents.mapType: input is ' + input);
+		if (input < 1 || input > ptypeHashReversed.length) {
+			$log.log('**** ERROR: presents.mapType(' + input + ') -> input is out of bounds');
 			return '';
 		} else {
-			$log.log('presents.mapType = ' + ptypeHash[input]);
-			return ptypeHash[input];
+			// $log.log('presents.mapType(' + input + ') = ' + ptypeHashReversed[input]);
+			return ptypeHashReversed[input];
 		}
 	};
 })
-.controller('PresentsListCtrl', function ($scope, $log, $http, uiGridConstants, $translate, $timeout, $interval, $translatePartialLoader, AppConfig, cfg) {
+.controller('PresentsListCtrl', function ($scope, $log, $http, uiGridConstants, $translate, $timeout, $interval, $translatePartialLoader, AppConfig) {
 	AppConfig.setCurrentApp('Presents', 'fa-gift', 'presents', 'app/presents/menu.html');
 	$translatePartialLoader.addPart('presents');
 
@@ -32,7 +47,7 @@ angular.module('presents')
 			'datum': new Date().toLocaleDateString(AppConfig.getCurrentLanguageKey()),
 			'from': 'myself',
 			'to': 'you',
-			'ptype': $translate('PTBirthday'),
+			'ptype': $translate('Birthday'),
 			'comment': 'bla'
 		});
 	};
@@ -45,7 +60,7 @@ angular.module('presents')
 
 	$scope.saveRow = function( rowEntity ) {
 		var _uri = '/api/presents/' + rowEntity.id;
-		$log.log('PresentsListCtrl.saveRow() -> $http.put(' + _uri + ')');
+		$log.log('PresentsListCtrl.saveRow(' + rowEntity.toJSON() + ') -> $http.put(' + _uri + ')');
 		var promise = $http.put(_uri);
 		$scope.gridApi.rowEdit.setSavePromise( $scope.gridApi.grid, rowEntity, promise.promise );
 	};
@@ -59,46 +74,35 @@ angular.module('presents')
 		enableGridMenu: true,
 		// pagingPageSizes: [25, 50, 75],
 		// pagingPageSize: 25,
-		enableCellEdit: true,
+		enableCellEditOnFocus: true,
 		enableSelectAll: true,
 
 		columnDefs: [
-			{	name: 'id', field: '_id', displayName: 'ID', visible: false, width: '*' },
+			{	name: 'id', field: '_id', displayName: 'ID', enableCellEdit: false, visible: false, width: '*' },
 			{ 	name: 'datum', field: 'datum', displayName: 'Date', visible: true, width: '*', 
-				sort: { direction: uiGridConstants.ASC }}, 
+					sort: { direction: uiGridConstants.ASC }}, 
 			{ 	name: 'from', field: 'from', visible: true, width: '*' },
 			{ 	name: 'to', field: 'to', visible: true, width: '*' },
-			{ 	name: 'typ', field: 'ptype', displayName: 'Type', visible: true, width: '*', 
-				editDropdownFilter: 'translate', cellFilter: 'translate',
-				editableCellTemplate: 'ui-grid/dropdownEditor', 
-				editDropdownOptionsArray: [
-					{ id: 1, value: 'PTBirthday'},
-					{ id: 2, value: 'PTXmas'},
-					{ id: 3, value: 'PTOstern'},
-					{ id: 4, value: 'PTMatur'},
-					{ id: 5, value: 'PTKonfirmation'},
-					{ id: 6, value: 'PTHochzeit'},
-					{ id: 7, value: 'PTOther'}
-				]
-				/*,
-				ev. mit cellFilter: 'date:"yyyy-MM-dd"' versuchen im Datumsfeld
-				filter: {
-					condition: function(searchTerm, cellValue) {
-						$log.log('searchTerm=<' + searchTerm +  '>, cellValue=<' + cellValue > '>');
-						//	TODO:
-						var showValue = false; 
-						$translate(cellValue).then(function(translation) {
-							showValue = translation.match(searchTerm);
-						});
-						return showValue;
-						//$translate(cellValue).match(searchTerm);
-						//return true;
-					}
-				}
-				*/
+			{ 	name: 'ptype', field: 'ptype', displayName: 'Type', visible: true, width: '*',
+					cellFilter: 'mapType',
+					editDropdownFilter: 'translate',
+					editableCellTemplate: 'ui-grid/dropdownEditor', 
+					editDropdownOptionsArray: [
+						{ id: 1, value: 'Birthday'},
+						{ id: 2, value: 'Christmas'},
+						{ id: 3, value: 'Easter'},
+						{ id: 4, value: 'Matura'},
+						{ id: 5, value: 'Religion'},
+						{ id: 6, value: 'Marriage'},
+						{ id: 7, value: 'Other'}
+					]
 			},
 			{ name: 'comment', field: 'comment', enableSorting: false, visible: true, width: '*', minWidth: 20 }
 		],
+		// Importing Data
+		importerDataAddCallback: function (grid, newObjects) {
+			$scope.data = $scope.data.concat( newObjects );
+		},
 		// pdf export
 		exporterPdfDefaultStyle: { fontSize: 9},
 		exporterPdfTableStyle: { margin: [0, 5, 0, 15]},
@@ -152,22 +156,23 @@ angular.module('presents')
 		$scope.gridOptions.columnDefs[0].displayName = translation;
 	});
 */
-	var _presentsListUri = '/api/presents';
-	$http.get(_presentsListUri)
+	var _listUri = '/api/presents';
+	$http.get(_listUri)
 	.success(function(data, status) {
 		var i = 0;
 		for(i=0; i < data.length; i++) {
 			data[i].datum = new Date(data[i].datum).toLocaleDateString(AppConfig.getCurrentLanguageKey());
-			// data[i].ptype = ptypeHash[data[i].ptype];
+			// convert the ptype string expressions into indexes in order to work with dropdown list
+			data[i].ptype = ptypeHash[data[i].ptype];
 		}
 		$scope.gridOptions.data = data;
-		$log.log('**** SUCCESS: GET(' + _presentsListUri + ') returns with ' + status);
-    	$log.log('data=<' + data + '>');
+		$log.log('**** SUCCESS: GET(' + _listUri + ') returns with ' + status);
+    	// $log.log('data=<' + JSON.stringify(data) + '>');
 	})
 	.error(function(data, status) {
   		// called asynchronously if an error occurs or server returns response with an error status.
-    	$log.log('**** ERROR:  GET(' + _presentsListUri + ') returns with ' + status);
-    	$log.log('data=<' + data + '>');
+    	$log.log('**** ERROR:  GET(' + _listUri + ') returns with ' + status);
+    	// $log.log('data=<' + JSON.stringify(data) + '>');
   	});	
 
   	$scope.export = function() {
@@ -181,8 +186,7 @@ angular.module('presents')
   		}
   	};
 
-	$scope.getLang = function() {
-		// $log.log('PresentsListCtrl.getLang() = ' + AppConfig.getCurrentLanguageKey());
-		return AppConfig.getCurrentLanguageKey();
-	};
+  	$scope.getLang = function() {
+  		return AppConfig.getCurrentLanguageKey();
+  	};
 });

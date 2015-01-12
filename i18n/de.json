@@ -5,11 +5,11 @@
 	"ColTo": "An",
 	"ColType": "Geschenkart",
 	"ColComment": "Kommentar",
-	"PTBirthday": "Geburtstag",
-	"PTXmas": "Weihnachten",
-	"PTOstern": "Ostern",
-	"PTMatur": "Matur",
-	"PTKonfirmation": "Konfirmation",
-	"PTHochzeit": "Hochzeit",
-	"PTOther": "Anderes"
+	"Birthday": "Geburtstag",
+	"Christmas": "Weihnachten",
+	"Easter": "Ostern",
+	"Matura": "Matur",
+	"Religion": "Konfirmation",
+	"Marriage": "Hochzeit",
+	"Other": "Anderes"
 }
