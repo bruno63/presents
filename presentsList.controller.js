@@ -38,7 +38,7 @@ angular.module('presents')
 	};
 })
 .controller('PresentsListCtrl', function ($scope, $log, $http, uiGridConstants, $translate, $timeout, $interval, $translatePartialLoader, AppConfig) {
-	AppConfig.setCurrentApp('Presents', 'fa-gift', 'presents', 'app/presents/menu.html');
+	AppConfig.setCurrentApp('PresentsAppName', 'fa-gift', 'presents', 'app/presents/menu.html');
 	$translatePartialLoader.addPart('presents');
 
 	$scope.addData = function() {
