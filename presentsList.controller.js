@@ -72,8 +72,8 @@ angular.module('presents')
 		enableHiding: true,
 		enableColumnMenus: true,
 		enableGridMenu: true,
-		// pagingPageSizes: [25, 50, 75],
-		// pagingPageSize: 25,
+		paginationPageSizes: [25, 50, 75],
+		paginationPageSize: 25,
 		enableCellEditOnFocus: true,
 		enableSelectAll: true,
 
