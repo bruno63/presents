@@ -40,7 +40,7 @@ angular.module('presents')
 .controller('PresentsListCtrl', function ($scope, $log, $http, uiGridConstants, $translate, $timeout, $interval, $translatePartialLoader, cfg) {
 	cfg.GENERAL.CURRENT_APP = 'presents';
 	$translatePartialLoader.addPart('presents');
-	$log.log('PresentsListCtrl/cfg = ' + JSON.stringify(cfg));
+	$log.log('PresentsListCtrl/cfg = ' + JSON.stringify(cfg, null, '\t'));
 
 	$scope.addData = function() {
 //		var n = $scope.gridOptions.data.length + 1;
