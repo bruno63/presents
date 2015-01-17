@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('presents')
-.controller('PresentsAddCtrl', function ($scope, $log, $location, $translatePartialLoader, AppConfig, PresentsRestService) {
-	AppConfig.setCurrentApp('Presents', 'fa-gift', 'presents', 'app/presents/menu.html');
+.controller('PresentsAddCtrl', function ($scope, $log, $location, $translatePartialLoader, cfg, PresentsRestService) {
+	cfg.GENERAL.CURRENT_APP = 'presents';
 	$translatePartialLoader.addPart('presents');
 	$scope.save = function (isValid) {
 		$log.log('entering PresentsAddCtrl:save(' + isValid + ')');

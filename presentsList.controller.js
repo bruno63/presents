@@ -37,14 +37,15 @@ angular.module('presents')
 		}
 	};
 })
-.controller('PresentsListCtrl', function ($scope, $log, $http, uiGridConstants, $translate, $timeout, $interval, $translatePartialLoader, AppConfig) {
-	AppConfig.setCurrentApp('PresentsAppName', 'fa-gift', 'presents', 'app/presents/menu.html');
+.controller('PresentsListCtrl', function ($scope, $log, $http, uiGridConstants, $translate, $timeout, $interval, $translatePartialLoader, cfg) {
+	cfg.GENERAL.CURRENT_APP = 'presents';
 	$translatePartialLoader.addPart('presents');
+	$log.log('PresentsListCtrl/cfg = ' + JSON.stringify(cfg));
 
 	$scope.addData = function() {
 //		var n = $scope.gridOptions.data.length + 1;
 		$scope.gridOptions.data.push({
-			'datum': new Date().toLocaleDateString(AppConfig.getCurrentLanguageKey()),
+			'datum': new Date().toLocaleDateString(cfg.GENERAL.LANGS[cfg.GENERAL.CURRENT_LANG_ID]),
 			'from': 'myself',
 			'to': 'you',
 			'ptype': $translate('Birthday'),
@@ -161,7 +162,7 @@ angular.module('presents')
 	.success(function(data, status) {
 		var i = 0;
 		for(i=0; i < data.length; i++) {
-			data[i].datum = new Date(data[i].datum).toLocaleDateString(AppConfig.getCurrentLanguageKey());
+			data[i].datum = new Date(data[i].datum).toLocaleDateString(cfg.GENERAL.LANGS[cfg.GENERAL.CURRENT_LANG_ID]);
 			// convert the ptype string expressions into indexes in order to work with dropdown list
 			data[i].ptype = ptypeHash[data[i].ptype];
 		}
@@ -187,6 +188,6 @@ angular.module('presents')
   	};
 
   	$scope.getLang = function() {
-  		return AppConfig.getCurrentLanguageKey();
+  		return cfg.GENERAL.LANGS[cfg.GENERAL.CURRENT_LANG_ID];
   	};
 });
