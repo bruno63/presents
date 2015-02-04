@@ -7,6 +7,6 @@
 angular.module('presents')
 .factory('PresentsRestService', function(Restangular, cfg) {
 	return Restangular.withConfig(function(RestangularConfigurer) {
-		RestangularConfigurer.setBaseUrl(cfg.PresentsSvcUri);
+		RestangularConfigurer.setBaseUrl(cfg.presents.SVC_URI);
 	});
 });

@@ -60,7 +60,7 @@ angular.module('presents')
 	};
 
 	$scope.saveRow = function( rowEntity ) {
-		var _uri = '/api/presents/' + rowEntity.id;
+		var _uri = cfg.presents.SVC_URI + rowEntity.id;
 		$log.log('PresentsListCtrl.saveRow(' + rowEntity.toJSON() + ') -> $http.put(' + _uri + ')');
 		var promise = $http.put(_uri);
 		$scope.gridApi.rowEdit.setSavePromise( $scope.gridApi.grid, rowEntity, promise.promise );
@@ -157,7 +157,8 @@ angular.module('presents')
 		$scope.gridOptions.columnDefs[0].displayName = translation;
 	});
 */
-	var _listUri = '/api/presents';
+	var _listUri = cfg.presents.SVC_URI;
+	$log.log("calling get on " + _listUri);
 	$http.get(_listUri)
 	.success(function(data, status) {
 		var i = 0;
