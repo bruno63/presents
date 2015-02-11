@@ -158,7 +158,7 @@ angular.module('presents')
 	});
 */
 	var _listUri = cfg.presents.SVC_URI;
-	$log.log("calling get on " + _listUri);
+	$log.log('calling get on ' + _listUri);
 	$http.get(_listUri)
 	.success(function(data, status) {
 		var i = 0;
